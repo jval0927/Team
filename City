@@ -1,0 +1,50 @@
+-- Creating the Parks table
+CREATE TABLE Parks (
+    Park_id SERIAL PRIMARY KEY,
+    Park_name VARCHAR(100) NOT NULL,
+    Area VARCHAR(100) NOT NULL,
+    Rating INTEGER NOT NULL CHECK (Rating BETWEEN 1 AND 5),
+    Enough_trees BOOLEAN NOT NULL,
+    Has_paths BOOLEAN NOT NULL,
+    Has_shade BOOLEAN NOT NULL
+);
+
+-- Creating the Park_feedback table
+CREATE TABLE Park_feedback (
+    Feedback_id SERIAL PRIMARY KEY,
+    Park_id INT NOT NULL,
+    Felt_safe BOOLEAN NOT NULL,
+    Cleanliness VARCHAR(10) NOT NULL CHECK (Cleanliness IN ('Clean', 'Dirty')),
+    Needs_facilities VARCHAR(50),
+    Recommendations BOOLEAN NOT NULL,
+    FOREIGN KEY (Park_id) REFERENCES Parks(Park_id) ON DELETE CASCADE
+);
+
+-- Inserting data into Parks table
+INSERT INTO Parks (Park_name, Area, Rating, Enough_trees, Has_paths, Has_shade) VALUES
+('Bronx Park', 'Bronx park east', 3, TRUE, TRUE, FALSE),
+('Pelham Bay Park', 'Pelham Bay', 4, FALSE, TRUE, TRUE),
+('Mazzei Playground', 'Williamsbridge Rd', 3, TRUE, TRUE, FALSE),
+('Van Cortlandt Park', 'Cortlandt Park South', 5, TRUE, FALSE, TRUE);
+
+-- Inserting data into Park_feedback table
+INSERT INTO Park_feedback (Park_id, Felt_safe, Cleanliness, Needs_facilities, Recommendations) VALUES
+(1, FALSE, 'Dirty', 'Water Fountains', TRUE),
+(2, TRUE, 'Clean', 'Water Fountains', TRUE),
+(3, TRUE, 'Dirty', 'Restrooms', FALSE),
+(4, FALSE, 'Clean', 'OTHER', TRUE);
+
+-- Example query to retrieve all data
+SELECT 
+    p.Park_name, 
+    p.Area, 
+    p.Rating, 
+    p.Enough_trees, 
+    p.Has_paths, 
+    p.Has_shade, 
+    f.Felt_safe, 
+    f.Cleanliness, 
+    f.Needs_facilities, 
+    f.Recommendations
+FROM Parks p
+JOIN Park_feedback f ON p.Park_id = f.Park_id;
